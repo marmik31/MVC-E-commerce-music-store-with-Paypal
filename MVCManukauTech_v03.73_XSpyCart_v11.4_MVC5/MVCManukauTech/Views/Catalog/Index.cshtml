@@ -1,0 +1,77 @@
+﻿@model IEnumerable<MVCManukauTech.Models.Product>
+
+@{
+    //Are we showing all the products or only one category?
+    if (ViewBag.CategoryName == null)
+    {
+        ViewBag.Title = "Catalog";
+    }
+    else
+    { 
+        ViewBag.Title = "Catalog - " + ViewBag.CategoryName;
+    }
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Image
+        </th>
+        <th>
+            Unit Cost
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            Category
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @item.Name
+        </td>
+        <td>
+            <img src="~/Images/@item.ImageFileName" style="width:100px" />
+          
+        </td>
+        <td style="text-align: right">
+            @item.UnitCost
+        </td>
+        <td>
+            @item.Description
+        </td>
+        <td>
+            @item.Category.CategoryName
+        </td>
+        <td>
+            <input type="button" value="Add to Cart" onclick="NavCart('@item.ProductId')" />
+        </td>
+        <td>
+            <input type="button" value="Details" onclick="NavDetails('@item.ProductId')" />
+        </td>
+    </tr>
+}
+
+</table>
+
+<script type="text/javascript">
+    function NavDetails(ProductId)
+    {
+        window.location.replace("/Catalog/Details?ProductId=" + ProductId);
+    }
+
+    function NavCart(ProductId) {
+        window.location.replace("/OrderDetails/ShoppingCart?ProductId=" + ProductId);
+    }
+</script>

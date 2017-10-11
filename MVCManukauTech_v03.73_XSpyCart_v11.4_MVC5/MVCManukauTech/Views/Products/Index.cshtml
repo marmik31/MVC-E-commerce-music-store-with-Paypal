@@ -1,0 +1,185 @@
+﻿@model IEnumerable<MVCManukauTech.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@{
+    var info = ViewBag.SortingPagingInfo;
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@using (Html.BeginForm("Index", "Products", FormMethod.Post))
+{
+    @Html.Hidden("hiddenDate", (string)info.SortField)
+    @Html.Hidden("SortDirection", (string)info.SortDirection)
+    @Html.Hidden("PageCount", (int)info.PageCount)
+    @Html.Hidden("SizeOfThePage", (int)info.SizeOfThePage)
+    @Html.Hidden("CurrentPageIndex", (int)info.CurrentPageIndex)
+
+    
+    <p>
+        Search Customers:
+       
+        @Html.TextBox("SearchText", (string)info.SearchText, new { @class = "form-control" })
+        @Html.Hidden("NewSearch", (string)info.NewSearch)
+        <input type="button" id="searchProducts" value="Submit" /><br />
+       
+    </p>
+
+
+    <script src="~/Scripts/jquery-3.1.1.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".header").click(function (evt) {
+                    var sortfield = $(evt.target).data("sortfield");
+                    if ($("#SortField").val() == sortfield) {
+                        if ($("#SortDirection").val() == "ascending") {
+                            $("#SortDirection").val("descending");
+                        }
+                        else {
+                            $("#SortDirection").val("ascending");
+                        }
+                    }
+                    else {
+                        $("#SortField").val(sortfield);
+                        $("#SortDirection").val("ascending");
+                    }
+                    evt.preventDefault();
+                    $("#NewSearch").val("N");
+                    $("form").submit();
+                });
+
+                $(".pager").click(function (evt) {
+                    var pageindex = $(evt.target).data("pageindex");
+                    $("#CurrentPageIndex").val(pageindex);
+                    evt.preventDefault();
+                    $("#NewSearch").val("N");
+                    $("form").submit();
+                });
+                $("#searchProducts").click(function () {
+                    $("#NewSearch").val("Y");
+                    $("form").submit();
+                });
+            });
+
+            function XAjaxRequest(Search) {
+                if (Search.length < 3) return;
+                var xmlhttp;
+                xmlhttp = new XMLHttpRequest();
+                var url = "/Products/IndexAJAX?Search=" + Search;
+                xmlhttp.open("GET", url, false);
+                xmlhttp.send();
+
+                document.getElementById("xResponse").value = xmlhttp.responseText;
+            }
+        </script>
+
+
+
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImageFileName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitCost)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsDownload)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DownloadFileName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Category.CategoryName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImageFileName)
+            <img src="~/Images/@item.ImageFileName" style="width:20em" />
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UnitCost)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsDownload)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DownloadFileName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Category.CategoryName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.ProductId }) |
+            @Html.ActionLink("Details", "Details", new { id = item.ProductId }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.ProductId })
+        </td>
+    </tr>
+}
+ 
+</table>
+
+
+        <div class="pagination-div">
+            @for (var i = 0; i < info.PageCount; i++)
+                {
+                    if (i == info.CurrentPageIndex)
+                    {
+                    <span>@(i + 1)</span>
+                }
+                else
+                {
+                    <a href="#" data-pageindex="@i"
+                       class="pager">@(i + 1)</a>
+                }
+            }
+        </div>
+  
+
+<style>
+    .pagination-div {
+        height: 50px;
+        width: 100%;
+        padding: 4px;
+    }
+
+        .pagination-div a {
+            text-decoration: underline;
+        }
+
+        .pagination-div a, span {
+            width: 15px;
+            height: 15px;
+            float: left;
+            padding-left: 0;
+            margin: 20px 0;
+            text-align: center;
+        }
+</style>
+}

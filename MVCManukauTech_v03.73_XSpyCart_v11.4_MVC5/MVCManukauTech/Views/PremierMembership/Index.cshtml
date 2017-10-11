@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<h3>The price of the Primeum Membership is 50$ please pay to get 12% Discount</h3>
+
+<div id="paypal-button">
+    
+
+    <form method="post" action="~/PremierMembership/Purchase">
+        <input id="Premier" type="submit" style="display:none "submt">Click to subscribe</input>
+    </form>
+</div>
+<div id="message">You are an existing prime member</div>
+
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+<script>
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'sandbox'
+
+        client: {
+            sandbox:    'AWvJ1fS8KqVy0zHytEIISJeSgxUqWm60rMQr4lsrIsj_sxFrIQvkZpffSsqdre6dC1kXSP4K6UQJKWhP',
+            production: ''
+        },
+
+        commit: true, // Show a 'Pay Now' button
+
+        payment: function(data, actions) {
+            return actions.payment.create({
+                payment: {
+                    transactions: [
+                        {
+                            amount: { total: '10.00', currency: 'NZD' }
+                        }
+                    ]
+                }
+            });
+        },
+
+        onAuthorize: function(data, actions) {
+            return actions.payment.execute().then(function(payment) {
+
+                // The payment is complete!
+                document.getElementById("Premier").click();
+
+                // You can now show a confirmation message to the customer
+            });
+        }
+
+    }, '#paypal-button');
+
+    if ( '@ViewBag.mess_Prime' == 'Prime' )
+    {
+        document.getElementById("paypal-button").style.visibility = 'hidden';
+        document.getElementById("message").style.visibility = 'visible';
+    }
+    else
+    
+    {
+        // Discount();
+        document.getElementById("message").style.visibility = 'hidden';
+    }
+
+</script>
+
+

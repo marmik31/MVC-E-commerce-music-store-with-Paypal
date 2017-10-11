@@ -1,0 +1,6 @@
+﻿Generated model file: XSpy.edmx.
+Loading metadata from the database took 00:00:00.6470288.
+Generating the model took 00:00:01.5721227.
+Generated model file: XSpy.edmx.
+Loading metadata from the database took 00:00:00.4216498.
+Generating the model took 00:00:00.4549588.
